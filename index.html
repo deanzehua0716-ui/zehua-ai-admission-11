@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能选校评估 - 定制您的留学方案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        header { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 40px 30px; text-align: center; }
+        header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 600; }
+        header p { font-size: 1.1em; opacity: 0.9; }
+        form { padding: 30px; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #2c3e50; }
+        input, select { width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; }
+        input:focus, select:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
+        .submit-btn { width: 100%; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 15px; font-size: 18px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 14px rgba(231, 76, 60, 0.3); }
+        .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+        .loading-spinner { width: 20px; height: 20px; border: 2px solid transparent; border-top: 2px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .result-container { padding: 30px; border-top: 1px solid #e1e8ed; display: none; }
+        .result-container h3 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        .report-content { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; margin-bottom: 20px; white-space: pre-line; line-height: 1.6; }
+        .success-note { background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; border: 1px solid #c3e6cb; text-align: center; }
+        footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 0.9em; border-top: 1px solid #e1e8ed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI智能选校评估</h1>
+            <p>填写信息，60秒获取您的专属留学方案</p>
+        </header>
+
+        <form id="assessmentForm">
+            <div class="form-group">
+                <label for="name">您的姓名 *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="contact">联系方式 *</label>
+                <input type="text" id="contact" name="contact" placeholder="电话或微信" required>
+            </div>
+            <div class="form-group">
+                <label for="gpa">平均成绩/GPA *</label>
+                <input type="text" id="gpa" name="gpa" placeholder="例如: 3.5/4.0 或 88/100" required>
+            </div>
+            <div class="form-group">
+                <label for="country">目标留学国家 *</label>
+                <select id="country" name="country" required>
+                    <option value="">请选择</option>
+                    <option value="美国">美国</option>
+                    <option value="英国">英国</option>
+                    <option value="加拿大">加拿大</option>
+                    <option value="澳大利亚">澳大利亚</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="major">感兴趣的专业 *</label>
+                <input type="text" id="major" name="major" placeholder="例如: 计算机科学、金融、心理学" required>
+            </div>
+            <button type="button" id="submitBtn" class="submit-btn">
+                <span>获取我的AI选校报告</span>
+                <div class="loading-spinner" style="display: none;"></div>
+            </button>
+        </form>
+
+        <div id="result" class="result-container">
+            <h3>您的AI选校分析报告</h3>
+            <div id="reportContent" class="report-content"></div>
+            <p class="success-note">✓ 我们的资深顾问已收到您的评估请求，将在24小时内与您联系。</p>
+        </div>
+
+        <footer>
+            <p>© 2024 专业留学咨询</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI选校系统已启动 - 模拟模式');
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            const reportContent = document.getElementById('reportContent');
+            
+            submitBtn.addEventListener('click', async function() {
+                console.log('开始生成AI报告...');
+                
+                const btnText = submitBtn.querySelector('span');
+                const spinner = submitBtn.querySelector('.loading-spinner');
+                
+                // 显示加载状态
+                btnText.textContent = 'AI正在生成您的专属报告...';
+                spinner.style.display = 'block';
+                submitBtn.disabled = true;
+                
+                try {
+                    // 收集表单数据
+                    const formData = {
+                        name: document.getElementById('name').value.trim(),
+                        contact: document.getElementById('contact').value.trim(),
+                        gpa: document.getElementById('gpa').value.trim(),
+                        country: document.getElementById('country').value,
+                        major: document.getElementById('major').value.trim()
+                    };
+                    
+                    console.log('用户数据:', formData);
+                    
+                    // 验证必填字段
+                    if (!formData.name || !formData.contact || !formData.gpa || !formData.country || !formData.major) {
+                        throw new Error('请填写所有必填字段！');
+                    }
+                    
+                    // 模拟AI处理时间
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // 生成智能AI报告
+                    const aiReport = generateAIReport(formData);
+                    
+                    // 显示报告
+                    reportContent.textContent = aiReport;
+                    resultDiv.style.display = 'block';
+                    
+                    // 自动滚动到结果
+                    setTimeout(() => {
+                        resultDiv.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 100);
+                    
+                    console.log('AI报告生成成功！');
+                    
+                } catch (error) {
+                    console.error('错误:', error);
+                    alert('错误: ' + error.message);
+                } finally {
+                    // 恢复按钮状态
+                    btnText.textContent = '获取我的AI选校报告';
+                    spinner.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            });
+            
+            // 智能AI报告生成函数
+            function generateAIReport(data) {
+                const { name, gpa, country, major } = data;
+                const gpaNum = parseFloat(gpa) || 3.0;
+                
+                // 根据背景生成个性化报告
+                let competitiveness = '';
+                if (gpaNum >= 3.7) competitiveness = '非常有竞争力';
+                else if (gpaNum >= 3.3) competitiveness = '具备良好竞争力';
+                else competitiveness = '有挑战但有机会';
+                
+                const countryTips = {
+                    '美国': '美国院校看重综合背景，建议突出个人特色和实习经历。',
+                    '英国': '英国大学注重学术成绩，建议提前准备个人陈述。',
+                    '加拿大': '加拿大移民政策友好，可同时考虑就业前景。',
+                    '澳大利亚': '澳洲八大是不错选择，关注专业认证情况。'
+                };
+                
+                const majorTips = {
+                    '计算机科学': 'CS专业竞争激烈，建议补充项目经验和编程能力证明。',
+                    '金融': '金融专业看重数学背景和实习经历。',
+                    '商业分析': '需要量化分析能力和相关软件技能。',
+                    '数据科学': '建议补充数学、统计和编程相关课程。',
+                    '工程': '工程类专业看重项目经验和科研背景。'
+                };
+                
+                const report = `
+${name}同学，您好！
+
+基于您的学术背景（GPA: ${gpa}）和对${major}的专业兴趣，我们的AI系统为您生成以下选校分析：
+
+📊 竞争力评估：${competitiveness}
+
+🎯 选校策略建议：
+• 冲刺院校：${country}顶尖大学
+• 匹配院校：${country}中等排名大学  
+• 保底院校：${country}录取要求相对宽松的大学
+
+💡 专业建议：
+${countryTips[country] || '建议根据个人兴趣和职业规划选择适合的院校。'}
+${majorTips[major] || '建议深入了解该专业的课程设置和就业方向。'}
+
+📝 申请准备：
+1. 准备语言考试成绩（托福/雅思）
+2. 完善个人陈述和简历
+3. 争取相关实习或项目经验
+4. 准备推荐信
+
+我们的资深顾问将结合最新招生政策，为您提供更精准的院校名单和申请时间规划。
+
+立即预约顾问，获取完整选校方案！`;
+
+                return report;
+            }
+        });
+    </script>
+</body>
+</html>
